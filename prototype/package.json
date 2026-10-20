@@ -1,0 +1,1 @@
+{"name":"daily-practice-browser-test","private":true,"scripts":{"build":"node scripts/build.cjs"},"dependencies":{"react":"19.2.0","react-dom":"19.2.0"},"devDependencies":{"typescript":"^5.9.0","webpack":"^5.0.0"}}
