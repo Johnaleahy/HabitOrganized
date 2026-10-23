@@ -49,7 +49,7 @@ npm test
 npm run build
 ```
 
-Calendar tests cover cross-timezone dates and daylight-saving boundaries. Hosted Supabase authentication, email delivery, database policy execution, and device synchronization must be checked against a connected project; the local demo cannot verify them.
+Calendar tests cover cross-timezone dates and daylight-saving boundaries. Database tests execute the migration in PostgreSQL (PGlite) and verify per-user access, check-in ownership, uniqueness, retry safety, and undo. GitHub Actions runs the tests and production build on pushes and pull requests. Hosted Supabase authentication, email delivery, database policy execution, and device synchronization must be checked against a connected project; the local demo cannot verify them.
 
 ## Scope
 
