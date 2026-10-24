@@ -2,13 +2,14 @@
 
 ## Hosted project
 
-The migration in `migrations/202610160001_initial.sql` creates profiles, habits,
+The migration in `migrations/20261024015753_initial_habit_app_schema.sql` creates profiles, habits,
 and daily check-ins. All tables enforce row-level security. Users can access
 only their own records. Check-ins must reference a habit owned by the same user,
 and one habit can have only one check-in per local date.
 
-Once the Supabase integration is connected, select the intended project, inspect
-its existing schema, and apply the migration there. Do not run it blindly against
+The configured HabbitsApp project (`pbkkuuimwtdudxujuorl`) already has both
+migrations applied. For another project, inspect its existing schema before
+applying these migrations. Do not run it blindly against
 a project with existing tables of the same names. For a fresh project, the SQL can
 also be run once in its SQL Editor. Applying the migration is required: public
 project credentials alone cannot create or migrate tables.
@@ -18,8 +19,7 @@ and allow it as a redirect URL. The current test origin is:
 
 `https://daily-practice-first-test.team-immedia-9042.chatgpt.site`
 
-The published test must also be upgraded to use the Supabase-backed app before
-sign-in works there. The root app's public configuration is documented in
+The published test uses the root Supabase-backed app, exported as static assets. The root app's public configuration is documented in
 `../.env.example`. Never put a database password, secret key, service-role key,
 or Supabase personal access token in browser code or Git.
 
@@ -31,3 +31,17 @@ matching habit/check-in owners, daily uniqueness, retries, undo, and anonymous
 access denial. The harness supplies the Supabase auth schema and identity
 function; hosted Auth, email delivery, and cross-device behavior still need a
 connected project for end-to-end testing.
+
+## Email delivery
+
+Site URL and allowed redirects are configured for the existing test origin and
+localhost. Email signup is enabled and email verification remains required.
+Supabase's built-in sender allows only project-team addresses; configure custom
+SMTP before opening signup to the public.
+
+## Live checks
+
+Hosted RLS and constraint assertions passed inside a rolled-back transaction.
+Separate real authenticated sessions also passed create/read, retry-safe import,
+account isolation, forged-owner rejection, synchronized undo, and anonymous-access
+denial. Temporary test accounts were signed out and removed.

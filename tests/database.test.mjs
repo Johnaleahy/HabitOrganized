@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
 
 // Executes the actual migration in PostgreSQL. Only Supabase's auth identity
@@ -22,7 +22,10 @@ test('database enforces ownership, daily uniqueness, and retry-safe guest import
       grant usage on schema public, auth to authenticated, anon;
     `);
     await db.query('insert into auth.users(id) values ($1), ($2)', [alice, bob]);
-    await db.exec(await readFile(new URL('../supabase/migrations/202610160001_initial.sql', import.meta.url), 'utf8'));
+    const migrations = new URL('../supabase/migrations/', import.meta.url);
+    for (const file of (await readdir(migrations)).filter(name => name.endsWith('.sql')).sort()) {
+      await db.exec(await readFile(new URL(file, migrations), 'utf8'));
+    }
     await db.exec('set role authenticated');
     const asUser = id => db.query("select set_config('request.jwt.claim.sub', $1, false)", [id]);
     const insertHabit = (id, owner, name = 'Guitar') => db.query('insert into public.habits(id,user_id,name,target_minutes) values ($1,$2,$3,5)', [id, owner, name]);
